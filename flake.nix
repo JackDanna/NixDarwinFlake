@@ -103,8 +103,8 @@
     in
     {
       # Build darwin flake using:
-      # $ darwin-rebuild build --flake .#simple
-      darwinConfigurations."simple" = nix-darwin.lib.darwinSystem {
+      # $ darwin-rebuild build --flake .#developers-Mac-mini
+      darwinConfigurations."developers-Mac-mini" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
           nix-homebrew.darwinModules.nix-homebrew
