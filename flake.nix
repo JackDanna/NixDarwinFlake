@@ -80,9 +80,7 @@
               "visual-studio-code"
             ];
             masApps = {
-              # "Prompt 3" = 1594420480;
               Xcode = 497799835;
-              # "Yoink" = 457622435;
             };
             onActivation.cleanup = "zap";
             onActivation.autoUpdate = true;
