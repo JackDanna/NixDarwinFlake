@@ -43,6 +43,7 @@
                 git
                 nixfmt
                 nixd
+                vscode
               ];
 
               # Determinate Nix manages the Nix installation, so disable nix-darwin's management.
@@ -80,9 +81,9 @@
                 brews = [
                   "mas"
                 ];
-                casks = [
-                  "visual-studio-code"
-                ];
+                # casks = [
+                #   "visual-studio-code"
+                # ];
                 masApps = {
                   Xcode = 497799835;
                 };
