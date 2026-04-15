@@ -1,7 +1,7 @@
 Step 0: Start with a fresh mac
 Step 1: Run the determinate nix installer `curl -fsSL https://install.determinate.systems/nix | sh -s -- install`
 Step 2: Clone this repo into the "~/repos" folder
-Step 3: `sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/repos/NixDarwinFlake#simple`
+Step 3: `sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .`
 Step 4: Test Darwin install using `which darwin-rebuild` from a new terminal instace
 Step 5: Enable Full Disk Access to Terminal and Vscode
 To Rebuild: `sudo darwin-rebuild switch --flake ~/repos/NixDarwinFlake#simple`
