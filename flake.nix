@@ -7,45 +7,53 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
-  let
-    configuration = { pkgs, ... }: {
-      # List packages installed in system profile. To search by name, run:
-      # $ nix-env -qaP | grep wget
-      environment.systemPackages = with pkgs; [ 
-        git
-        nixd
-        vscode
-      ];
+  outputs =
+    inputs@{
+      self,
+      nix-darwin,
+      nixpkgs,
+    }:
+    let
+      configuration =
+        { pkgs, ... }:
+        {
+          # List packages installed in system profile. To search by name, run:
+          # $ nix-env -qaP | grep wget
+          environment.systemPackages = with pkgs; [
+            git
+            nixfmt
+            nixd
+            vscode
+          ];
 
-      # Determinate Nix manages the Nix installation, so disable nix-darwin's management.
-      nix.enable = false;
+          # Determinate Nix manages the Nix installation, so disable nix-darwin's management.
+          nix.enable = false;
 
-      # Not necessary when using Determinate Nix (flakes are enabled by default).
-      # nix.settings.experimental-features = "nix-command flakes";
+          # Not necessary when using Determinate Nix (flakes are enabled by default).
+          # nix.settings.experimental-features = "nix-command flakes";
 
-      # Enable alternative shell support in nix-darwin.
-      # programs.fish.enable = true;
+          # Enable alternative shell support in nix-darwin.
+          # programs.fish.enable = true;
 
-      # Set Git commit hash for darwin-version.
-      system.configurationRevision = self.rev or self.dirtyRev or null;
+          # Set Git commit hash for darwin-version.
+          system.configurationRevision = self.rev or self.dirtyRev or null;
 
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
-      system.stateVersion = 6;
+          # Used for backwards compatibility, please read the changelog before changing.
+          # $ darwin-rebuild changelog
+          system.stateVersion = 6;
 
-      # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = "aarch64-darwin";
+          # The platform the configuration will be used on.
+          nixpkgs.hostPlatform = "aarch64-darwin";
 
-      # Allow unfree packages (e.g. vscode).
-      nixpkgs.config.allowUnfree = true;
+          # Allow unfree packages (e.g. vscode).
+          nixpkgs.config.allowUnfree = true;
+        };
+    in
+    {
+      # Build darwin flake using:
+      # $ darwin-rebuild build --flake .#simple
+      darwinConfigurations."simple" = nix-darwin.lib.darwinSystem {
+        modules = [ configuration ];
+      };
     };
-  in
-  {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#simple
-    darwinConfigurations."simple" = nix-darwin.lib.darwinSystem {
-      modules = [ configuration ];
-    };
-  };
 }
