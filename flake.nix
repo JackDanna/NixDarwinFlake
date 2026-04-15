@@ -57,16 +57,26 @@
           # $ darwin-rebuild changelog
           system.stateVersion = 6;
 
+          # Required for options like homebrew.enable that apply to a specific user.
+          system.primaryUser = "developer";
+
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
 
-          # Install Rosetta 2 for Intel app compatibility.
-          system.activationScripts.extraActivation.text = ''
+          # Install Rosetta 2 for Intel app compatibility..
+          system.activationScripts.installRosetta.text = ''
             softwareupdate --install-rosetta --agree-to-license
           '';
 
           # Allow unfree packages (e.g. vscode).
           nixpkgs.config.allowUnfree = true;
+
+          homebrew = {
+            enable = true;
+            casks = [
+              "visual-studio-code"
+            ];
+          };
         };
     in
     {
