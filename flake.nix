@@ -76,6 +76,7 @@
             casks = [
               "visual-studio-code"
             ];
+            onActivation.cleanup = "zap";
           };
         };
     in
