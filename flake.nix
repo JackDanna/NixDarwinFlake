@@ -60,6 +60,11 @@
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
 
+          # Install Rosetta 2 for Intel app compatibility.
+          system.activationScripts.extraActivation.text = ''
+            softwareupdate --install-rosetta --agree-to-license
+          '';
+
           # Allow unfree packages (e.g. vscode).
           nixpkgs.config.allowUnfree = true;
         };
