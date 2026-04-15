@@ -75,7 +75,6 @@
             brews = [
               "mas"
             ];
-
             casks = [
               "visual-studio-code"
             ];
