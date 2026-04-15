@@ -93,8 +93,10 @@
             }
           )
 
+          # Loads the nix-homebrew feature, adding the nix-homebrew option namespace into nix-darwin.
           nix-homebrew.darwinModules.nix-homebrew
 
+          # Configures nix-homebrew: enables it, sets the user, and pins tap versions via flake.lock.
           {
             nix-homebrew = {
               enable = true;
@@ -108,6 +110,7 @@
             };
           }
 
+          # Wires nix-homebrew's pinned taps into nix-darwin's homebrew.taps so they are activated.
           (
             { config, ... }:
             {
