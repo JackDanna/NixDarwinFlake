@@ -38,7 +38,6 @@
             git
             nixfmt
             nixd
-            vscode
           ];
 
           # Determinate Nix manages the Nix installation, so disable nix-darwin's management.
@@ -66,16 +65,6 @@
           # Install Rosetta 2 for Intel app compatibility..
           system.activationScripts.installRosetta.text = ''
             softwareupdate --install-rosetta --agree-to-license
-          '';
-          # Xcode CLT is required by Homebrew. Installs silently via softwareupdate.
-          system.activationScripts.installXcodeCLT.text = ''
-            if ! xcode-select -p &>/dev/null; then
-              touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-              CLT=$(softwareupdate -l | grep -E "Command Line Tools" | sort -n | tail -1 | sed 's|.*\* ||')
-              softwareupdate -i "$CLT" --agree-to-license
-              rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-            fi
-            xcodebuild -license accept
           '';
 
           # Allow unfree packages (e.g. vscode).
