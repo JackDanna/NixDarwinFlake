@@ -67,15 +67,28 @@
           system.activationScripts.installRosetta.text = ''
             softwareupdate --install-rosetta --agree-to-license
           '';
+          # Xcode CLT is required by Homebrew. Opens a GUI prompt if not already installed.
+          # system.activationScripts.installXcodeCLT.text = ''
+          #   if ! xcode-select -p &>/dev/null; then
+          #     xcode-select --install
+          #   fi
+          # '';
 
           # Allow unfree packages (e.g. vscode).
           nixpkgs.config.allowUnfree = true;
 
           homebrew = {
             enable = true;
-            casks = [
-              "visual-studio-code"
-            ];
+            # brews = [
+            #   "mas"
+            # ];
+
+            # casks = [
+            #   "visual-studio-code"
+            # ];
+            # masApps = {
+            #   "Xcode" = 497799835;
+            # };
             onActivation.cleanup = "zap";
           };
         };
