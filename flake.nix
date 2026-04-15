@@ -28,72 +28,73 @@
       homebrew-core,
       homebrew-cask,
     }:
-    let
-      configuration =
-        { pkgs, ... }:
-        {
-          # List packages installed in system profile. To search by name, run:
-          # $ nix-env -qaP | grep wget
-          environment.systemPackages = with pkgs; [
-            git
-            nixfmt
-            nixd
-          ];
-
-          # Determinate Nix manages the Nix installation, so disable nix-darwin's management.
-          nix.enable = false;
-
-          # Not necessary when using Determinate Nix (flakes are enabled by default).
-          # nix.settings.experimental-features = "nix-command flakes";
-
-          # Enable alternative shell support in nix-darwin.
-          # programs.fish.enable = true;
-
-          # Set Git commit hash for darwin-version.
-          system.configurationRevision = self.rev or self.dirtyRev or null;
-
-          # Used for backwards compatibility, please read the changelog before changing.
-          # $ darwin-rebuild changelog
-          system.stateVersion = 6;
-
-          # Required for options like homebrew.enable that apply to a specific user.
-          system.primaryUser = "developer";
-
-          # The platform the configuration will be used on.
-          nixpkgs.hostPlatform = "aarch64-darwin";
-
-          # Install Rosetta 2 for Intel app compatibility..
-          system.activationScripts.installRosetta.text = ''
-            softwareupdate --install-rosetta --agree-to-license
-          '';
-
-          # Allow unfree packages (e.g. vscode).
-          nixpkgs.config.allowUnfree = true;
-
-          homebrew = {
-            enable = true;
-            brews = [
-              "mas"
-            ];
-            casks = [
-              "visual-studio-code"
-            ];
-            masApps = {
-              Xcode = 497799835;
-            };
-            onActivation.cleanup = "zap";
-            onActivation.autoUpdate = true;
-            onActivation.upgrade = true;
-          };
-        };
-    in
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#developers-Mac-mini
       darwinConfigurations."developers-Mac-mini" = nix-darwin.lib.darwinSystem {
         modules = [
-          configuration
+          # Configuration for system packages and settings
+          (
+            { pkgs, ... }:
+            {
+              # List packages installed in system profile. To search by name, run:
+              # $ nix-env -qaP | grep wget
+              environment.systemPackages = with pkgs; [
+                git
+                nixfmt
+                nixd
+              ];
+
+              # Determinate Nix manages the Nix installation, so disable nix-darwin's management.
+              nix.enable = false;
+
+              # Not necessary when using Determinate Nix (flakes are enabled by default).
+              # nix.settings.experimental-features = "nix-command flakes";
+
+              # Enable alternative shell support in nix-darwin.
+              # programs.fish.enable = true;
+
+              # Set Git commit hash for darwin-version.
+              system.configurationRevision = self.rev or self.dirtyRev or null;
+
+              # Used for backwards compatibility, please read the changelog before changing.
+              # $ darwin-rebuild changelog
+              system.stateVersion = 6;
+
+              # Required for options like homebrew.enable that apply to a specific user.
+              system.primaryUser = "developer";
+
+              # The platform the configuration will be used on.
+              nixpkgs.hostPlatform = "aarch64-darwin";
+
+              # Install Rosetta 2 for Intel app compatibility..
+              system.activationScripts.installRosetta.text = ''
+                softwareupdate --install-rosetta --agree-to-license
+              '';
+
+              # Allow unfree packages (e.g. vscode).
+              nixpkgs.config.allowUnfree = true;
+
+              homebrew = {
+                enable = true;
+                brews = [
+                  "mas"
+                ];
+                casks = [
+                  "visual-studio-code"
+                ];
+                masApps = {
+                  Xcode = 497799835;
+                };
+                onActivation.cleanup = "zap";
+                onActivation.autoUpdate = true;
+                onActivation.upgrade = true;
+              };
+            }
+          )
+
           nix-homebrew.darwinModules.nix-homebrew
+
           {
             nix-homebrew = {
               enable = true;
@@ -106,6 +107,7 @@
               mutableTaps = false;
             };
           }
+
           (
             { config, ... }:
             {
