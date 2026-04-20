@@ -6,6 +6,11 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-openclaw.url = "github:openclaw/nix-openclaw";
+
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
     # Optional: Declarative tap management
@@ -24,6 +29,8 @@
       self,
       nix-darwin,
       nixpkgs,
+      home-manager,
+      nix-openclaw,
       nix-homebrew,
       homebrew-core,
       homebrew-cask,
@@ -33,6 +40,36 @@
       # $ darwin-rebuild build --flake .#developers-Mac-mini
       darwinConfigurations."developers-Mac-mini" = nix-darwin.lib.darwinSystem {
         modules = [
+          # Expose openclaw packages via the nixpkgs overlay.
+          { nixpkgs.overlays = [ nix-openclaw.overlays.default ]; }
+
+          # Home Manager as a nix-darwin module.
+          home-manager.darwinModules.home-manager
+
+          # Injects the openclaw Home Manager module via home-manager.sharedModules.
+          nix-openclaw.darwinModules.openclaw
+
+          # OpenClaw Home Manager configuration for the primary user.
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.developer = {
+              home.stateVersion = "24.05";
+              programs.openclaw = {
+                documents = ./documents;
+                config = {
+                  gateway.mode = "local";
+                  # Generate with: openssl rand -hex 32
+                  gateway.auth.token = "REPLACE_WITH_LONG_RANDOM_TOKEN";
+                  channels.telegram = {
+                    tokenFile = "/Users/developer/.secrets/telegram-token";
+                    allowFrom = [ /* your Telegram user ID integer */ ];
+                  };
+                };
+                instances.default.enable = true;
+              };
+            };
+          }
           # Configuration for system packages and settings
           (
             { pkgs, ... }:
